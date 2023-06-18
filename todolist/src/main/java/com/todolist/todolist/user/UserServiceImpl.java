@@ -30,6 +30,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User getUser(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        return unwrapUser(user, 404L);
+    }
+
     public static User unwrapUser(Optional<User> entity, Long id) {
         if (entity.isPresent()) return entity.get();
         else throw new EntityNotFoundException(id, User.class);
