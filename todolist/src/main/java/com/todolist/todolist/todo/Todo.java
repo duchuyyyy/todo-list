@@ -1,6 +1,7 @@
 package com.todolist.todolist.todo;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.todolist.todolist.user.User;
 
 import jakarta.persistence.Column;
@@ -28,12 +29,17 @@ public class Todo {
     private String task;
 
     @Column(name = "status", nullable = false)
-    private int status;
+    private Boolean status;
 
     @Column(name = "important", nullable = false)
     private Boolean important;
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    public void loadFromDto(TodoDto dto) {
+        this.task = dto.getTask();
+    }
 }

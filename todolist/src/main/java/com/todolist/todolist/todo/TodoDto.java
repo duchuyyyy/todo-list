@@ -1,10 +1,11 @@
 package com.todolist.todolist.todo;
 import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class TodoDto {
-    private String task; 
+    private String task;
+
+    public void loadFromEntity(Todo entity) {
+        this.task = entity.getTask();
+    }
 }

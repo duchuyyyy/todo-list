@@ -7,7 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.todolist.todolist.dto.ResetPasswordRequestDto;
+import com.todolist.todolist.dto.ResetPasswordResponseDto;
+
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @AllArgsConstructor
@@ -23,4 +29,24 @@ public class UserController {
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @GetMapping("/register/confirmtoken={confirmtoken}")
+    public String verifiUser(@PathVariable String confirmtoken) {
+        return userService.confirmToken(confirmtoken);
+    }
+
+    @GetMapping("/forgot-password")
+    public void handleForgotPassword(@RequestBody ResetPasswordRequestDto resetPasswordRequestDto) {
+        User user = new User();
+        user.loadFromResetPasswordRequestDto(resetPasswordRequestDto);
+        userService.handleRequestResetPassword(user);
+    }
+
+    @PostMapping("/reset-password/resetpasswordtoken={resetpasswordtoken}")
+    public void resetPassword(@PathVariable String resetpasswordtoken, @RequestBody ResetPasswordResponseDto resetPasswordResponseDto) {
+        User user = new User();
+        user.loadFromResetPasswordResponseDto(resetPasswordResponseDto);
+        userService.handleResponseResetPassword(user, resetpasswordtoken);
+    }
+    
 }
