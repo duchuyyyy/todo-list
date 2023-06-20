@@ -3,6 +3,8 @@ package com.todolist.todolist.user;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.todolist.todolist.dto.ResetPasswordRequestDto;
+import com.todolist.todolist.dto.ResetPasswordResponseDto;
 import com.todolist.todolist.todo.Todo;
 
 import jakarta.persistence.CascadeType;
@@ -38,6 +40,9 @@ public class User {
     @Column(name = "confirmtoken", nullable = false)
     private String confirmtoken;
 
+    @Column(name = "resetpasswordtoken", nullable = true)
+    private String resetpasswordtoken;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Todo> todos;
@@ -45,5 +50,13 @@ public class User {
     public void loadFromDto(UserDto dto) {
         this.email = dto.getEmail();
         this.password = dto.getPassword();
+    }
+
+    public void loadFromResetPasswordRequestDto(ResetPasswordRequestDto resetPasswordRequestDto) {
+        this.email = resetPasswordRequestDto.getEmail();
+    }
+
+    public void loadFromResetPasswordResponseDto(ResetPasswordResponseDto resetPasswordResponseDto) {
+        this.password = resetPasswordResponseDto.getPassword();
     }
 }
