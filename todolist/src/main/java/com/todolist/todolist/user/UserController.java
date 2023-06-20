@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @AllArgsConstructor
@@ -23,4 +26,10 @@ public class UserController {
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @GetMapping("/register/confirmtoken={confirmtoken}")
+    public String verifiUser(@PathVariable String confirmtoken) {
+        return userService.confirmToken(confirmtoken);
+    }
+    
 }

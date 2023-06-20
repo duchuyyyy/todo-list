@@ -35,6 +35,9 @@ public class User {
     @Column(name = "verification", nullable = false)
     private Boolean verification;
 
+    @Column(name = "confirmtoken", nullable = false)
+    private String confirmtoken;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Todo> todos;
