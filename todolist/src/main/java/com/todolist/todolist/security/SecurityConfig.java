@@ -27,6 +27,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(SecurityConstants.REGISTER_PATH).permitAll()
+            .requestMatchers(SecurityConstants.CONFIRM_PATH).permitAll()
             .anyRequest().authenticated()
         )
         .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
