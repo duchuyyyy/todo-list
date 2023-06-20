@@ -1,5 +1,6 @@
 package com.todolist.todolist.security;
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +29,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(SecurityConstants.REGISTER_PATH).permitAll()
             .requestMatchers(SecurityConstants.CONFIRM_PATH).permitAll()
+            .requestMatchers(SecurityConstants.RESETREQUEST_PATH).permitAll()
+            .requestMatchers(SecurityConstants.RESETRESPONSE_PATH).permitAll()
             .anyRequest().authenticated()
         )
         .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)

@@ -7,4 +7,7 @@ public interface UserService {
     String generateConfirmToken(String email);
     User getUserByConfirmToken(String comfirmtoken);
     String confirmToken(String confirmtoken);
+    void handleRequestResetPassword(User user);
+    void handleResponseResetPassword(User user, String resetpasswordtoken);
+    User getUserByResetPasswordToken(String resetpasswordtoken);
 }

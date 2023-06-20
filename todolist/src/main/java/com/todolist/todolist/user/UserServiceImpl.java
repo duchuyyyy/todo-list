@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
         user.setConfirmtoken(confirmtoken);
 
         String link = "http://localhost:8080/user/register/confirmtoken=" + confirmtoken;
-        emailService.sendEmail(user.getEmail(), "Confirm account", emailService.buildEmail(user.getEmail(), link));
+        emailService.sendEmail(user.getEmail(), "Confirm account", emailService.buildEmailConfirm(user.getEmail(), link));
 
         Boolean check = userRepository.existsByEmail(user.getEmail());
         if(check == false) {
@@ -56,6 +56,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByResetPasswordToken(String resetpasswordtoken) {
+       Optional<User> user = userRepository.findByresetpasswordtoken(resetpasswordtoken);
+       return unwrapUser(user, 404L);
+    }
+
+    @Override
     public String confirmToken(String confirmtoken) {
         User user = getUserByConfirmToken(confirmtoken);
         System.out.println(user.getConfirmtoken());
@@ -68,6 +74,25 @@ public class UserServiceImpl implements UserService {
         else {
             return "JWT is not valid!";
         }
+    }
+
+    @Override
+    public void handleRequestResetPassword(User user) {
+        User user1 = getUser(user.getEmail());
+
+        String resetPasswordToken = generateConfirmToken(user1.getEmail());
+        user1.setResetpasswordtoken(resetPasswordToken);
+        userRepository.save(user1);
+
+        String link = "http://localhost:8080/user/reset-password/resetpasswordtoken=" + resetPasswordToken;
+        emailService.sendEmail(user1.getEmail(), "Reset password account", emailService.buildEmailResetPassword(user1.getEmail(), link));
+    }
+
+    @Override
+    public void handleResponseResetPassword(User user, String resetpasswordtoken) {
+        User user1 = getUserByResetPasswordToken(resetpasswordtoken);
+        user1.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user1);
     }
 
     @Override
