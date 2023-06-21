@@ -31,6 +31,7 @@ public class SecurityConfig {
             .requestMatchers(SecurityConstants.CONFIRM_PATH).permitAll()
             .requestMatchers(SecurityConstants.RESETREQUEST_PATH).permitAll()
             .requestMatchers(SecurityConstants.RESETRESPONSE_PATH).permitAll()
+            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
             .anyRequest().authenticated()
         )
         .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
