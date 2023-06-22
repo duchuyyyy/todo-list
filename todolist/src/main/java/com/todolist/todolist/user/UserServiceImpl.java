@@ -144,6 +144,12 @@ public class UserServiceImpl implements UserService {
         User user = getUser(email);
         return user.getId();
     }
+    
+    @Override
+    public void deleteRefreshtoken(User user) {
+        user.setRefreshtoken("null");
+        userRepository.save(user);
+    }
 
     @Override
     public String generateConfirmToken(String email) {

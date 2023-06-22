@@ -63,4 +63,12 @@ public class UserController {
             return new ResponseEntity<>("Refreshtoken is not valid!", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<HttpStatus> logout(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+        String refreshtoken = refreshTokenRequestDto.getRefreshtoken().replace(SecurityConstants.BEARER, "");
+        User user = userService.getUserByRefreshtoken(refreshtoken);
+        userService.deleteRefreshtoken(user);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    } 
 }
