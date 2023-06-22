@@ -10,4 +10,9 @@ public interface UserService {
     void handleRequestResetPassword(User user);
     void handleResponseResetPassword(User user, String resetpasswordtoken);
     User getUserByResetPasswordToken(String resetpasswordtoken);
+    void setRefreshtoken(String email, String refreshtoken);
+    Long getIdUser(String email);
+    Boolean validateRefreshToken(String refreshtoken);
+    String generateAccessToken(String email);
+    User getUserByRefreshtoken(String refreshtoken);
 }

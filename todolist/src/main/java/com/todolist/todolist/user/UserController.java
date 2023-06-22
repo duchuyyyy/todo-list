@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.todolist.todolist.dto.ResetPasswordRequestDto;
-import com.todolist.todolist.dto.ResetPasswordResponseDto;
+import com.todolist.todolist.dto.Request.RefreshTokenRequestDto;
+import com.todolist.todolist.dto.Request.ResetPasswordRequestDto;
+import com.todolist.todolist.dto.Response.ResetPasswordResponseDto;
+import com.todolist.todolist.security.SecurityConstants;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,5 +50,17 @@ public class UserController {
         user.loadFromResetPasswordResponseDto(resetPasswordResponseDto);
         userService.handleResponseResetPassword(user, resetpasswordtoken);
     }
-    
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<String> refreshToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+        String refreshtoken = refreshTokenRequestDto.getRefreshtoken().replace(SecurityConstants.BEARER, "");
+        User user = userService.getUserByRefreshtoken(refreshtoken);
+        Boolean check = userService.validateRefreshToken(refreshtoken);
+        if(check == true) {
+            return new ResponseEntity<>(userService.generateAccessToken(user.getEmail()), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Refreshtoken is not valid!", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

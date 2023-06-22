@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.todolist.todolist.email.EmailService;
 import com.todolist.todolist.exception.DuplicateEmailException;
 import com.todolist.todolist.exception.EntityNotFoundException;
@@ -93,6 +94,55 @@ public class UserServiceImpl implements UserService {
         User user1 = getUserByResetPasswordToken(resetpasswordtoken);
         user1.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user1);
+    }
+
+    @Override
+    public void setRefreshtoken(String email, String refreshtoken) {
+        User user = getUser(email);
+        user.setRefreshtoken(refreshtoken);
+        userRepository.save(user);
+    }
+
+    @Override
+    public User getUserByRefreshtoken(String refreshtoken) {
+        Optional<User> user = userRepository.findByRefreshtoken(refreshtoken);
+        return unwrapUser(user, 404L);
+    }
+
+    @Override
+    public Boolean validateRefreshToken(String refreshtoken) {
+        if(userRepository.existsByRefreshtoken(refreshtoken)) {
+            try {
+                String user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET_KEY))
+                .build()
+                .verify(refreshtoken)
+                .getSubject();
+
+                System.out.println(user);
+                return true;
+            }
+            catch (JWTVerificationException e) {
+                // Verification failed
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String generateAccessToken(String email) {
+        String token = JWT.create()
+        .withSubject(email)
+        .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.TOKEN_EXPIRATION))
+        .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
+        token = SecurityConstants.BEARER + token;
+        return token;
+    }
+
+    @Override
+    public Long getIdUser(String email) {
+        User user = getUser(email);
+        return user.getId();
     }
 
     @Override
