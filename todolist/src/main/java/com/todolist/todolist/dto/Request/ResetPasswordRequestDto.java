@@ -1,4 +1,4 @@
-package com.todolist.todolist.dto;
+package com.todolist.todolist.dto.Request;
 
 import lombok.Data;
 

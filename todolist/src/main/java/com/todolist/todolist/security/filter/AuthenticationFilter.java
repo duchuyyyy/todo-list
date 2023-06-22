@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todolist.todolist.security.SecurityConstants;
 import com.todolist.todolist.security.manager.CustomAuthenticationManager;
 import com.todolist.todolist.user.User;
+import com.todolist.todolist.user.UserService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,6 +26,7 @@ import lombok.AllArgsConstructor;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
     
     private CustomAuthenticationManager authenticationManager;
+    private UserService userService;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -51,6 +53,19 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
             .withSubject(authResult.getName())
             .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.TOKEN_EXPIRATION))
             .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
+        
+        String refreshtoken = JWT.create()
+            .withSubject(authResult.getName())
+            .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.REFRESH_TOKEN_EXPIRATION))
+            .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
+
+        userService.setRefreshtoken(authResult.getName(), refreshtoken);
+        Long id = userService.getIdUser(authResult.getName());
+
         response.addHeader(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
+        response.addHeader(SecurityConstants.REFRESH, SecurityConstants.BEARER + refreshtoken);
+        response.getWriter().write(SecurityConstants.BEARER + token);
+        response.getWriter().write(SecurityConstants.BEARER + refreshtoken);
+        response.getWriter().write("ID user: " + id);
     }
 }
