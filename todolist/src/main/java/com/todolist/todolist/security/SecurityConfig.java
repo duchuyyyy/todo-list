@@ -11,6 +11,7 @@ import com.todolist.todolist.security.filter.AuthenticationFilter;
 import com.todolist.todolist.security.filter.ExceptionHandlerFilter;
 import com.todolist.todolist.security.filter.JWTAuthorizationFilter;
 import com.todolist.todolist.security.manager.CustomAuthenticationManager;
+import com.todolist.todolist.user.UserService;
 
 import lombok.AllArgsConstructor;
 
@@ -18,11 +19,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfig {
     
-    private final CustomAuthenticationManager customAuthenticationManager;
+    private CustomAuthenticationManager customAuthenticationManager;
+    private UserService userService;
     
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(customAuthenticationManager);
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(customAuthenticationManager, userService);
         authenticationFilter.setFilterProcessesUrl("/authenticate");
 
         http.csrf(csrf -> csrf.disable())
@@ -32,6 +34,7 @@ public class SecurityConfig {
             .requestMatchers(SecurityConstants.RESETREQUEST_PATH).permitAll()
             .requestMatchers(SecurityConstants.RESETRESPONSE_PATH).permitAll()
             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+            .requestMatchers(SecurityConstants.REFRESH_TOKEN_PATH).permitAll()
             .anyRequest().authenticated()
         )
         .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
