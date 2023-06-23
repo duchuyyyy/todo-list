@@ -25,19 +25,20 @@ public class UserServiceImpl implements UserService {
     EmailService emailService;
 
     @Override
-    public User saveUser(User user) {
-        user.setVerification(false);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        
-        String confirmtoken = generateConfirmToken(user.getEmail());
-        user.setConfirmtoken(confirmtoken);
-
-        String link = "http://localhost:8080/user/register/confirmtoken=" + confirmtoken;
-        emailService.sendEmail(user.getEmail(), "Confirm account", emailService.buildEmailConfirm(user.getEmail(), link));
-
+    public void saveUser(User user) {
         Boolean check = userRepository.existsByEmail(user.getEmail());
         if(check == false) {
-            return userRepository.save(user);
+            user.setVerification(false);
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            
+            String confirmtoken = generateConfirmToken(user.getEmail());
+            user.setConfirmtoken(confirmtoken);
+    
+            String link = "http://localhost:8080/user/register/confirmtoken=" + confirmtoken;
+            emailService.sendEmail(user.getEmail(), "Confirm account", emailService.buildEmailConfirm(user.getEmail(), link));
+
+            user.setRefreshtoken("null");
+            userRepository.save(user);
         }
         else {
             throw new DuplicateEmailException(user.getEmail());
@@ -105,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByRefreshtoken(String refreshtoken) {
-        Optional<User> user = userRepository.findByRefreshtoken(refreshtoken);
+        Optional<User> user = userRepository.findByrefreshtoken(refreshtoken);
         return unwrapUser(user, 404L);
     }
 

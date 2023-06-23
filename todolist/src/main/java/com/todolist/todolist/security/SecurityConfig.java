@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -21,6 +22,7 @@ import lombok.AllArgsConstructor;
 
 @Configuration
 @AllArgsConstructor
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
     
     private CustomAuthenticationManager customAuthenticationManager;
@@ -48,8 +50,9 @@ public class SecurityConfig {
             .requestMatchers(SecurityConstants.RESETRESPONSE_PATH).permitAll()
             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
             .requestMatchers(SecurityConstants.REFRESH_TOKEN_PATH).permitAll()
-            .anyRequest().authenticated()
+            .requestMatchers(SecurityConstants.ERROR).permitAll()
         )
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
         .cors(cors -> cors
         .configurationSource(source))
         .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
