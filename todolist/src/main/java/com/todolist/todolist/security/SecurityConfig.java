@@ -1,11 +1,16 @@
 package com.todolist.todolist.security;
 
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.todolist.todolist.security.filter.AuthenticationFilter;
 import com.todolist.todolist.security.filter.ExceptionHandlerFilter;
@@ -17,6 +22,7 @@ import lombok.AllArgsConstructor;
 
 @Configuration
 @AllArgsConstructor
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
     
     private CustomAuthenticationManager customAuthenticationManager;
@@ -27,6 +33,15 @@ public class SecurityConfig {
         AuthenticationFilter authenticationFilter = new AuthenticationFilter(customAuthenticationManager, userService);
         authenticationFilter.setFilterProcessesUrl("/authenticate");
 
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Refresh"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(List.of("Authorization", "Refresh"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
         http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(SecurityConstants.REGISTER_PATH).permitAll()
@@ -35,8 +50,11 @@ public class SecurityConfig {
             .requestMatchers(SecurityConstants.RESETRESPONSE_PATH).permitAll()
             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
             .requestMatchers(SecurityConstants.REFRESH_TOKEN_PATH).permitAll()
-            .anyRequest().authenticated()
+            .requestMatchers(SecurityConstants.ERROR).permitAll()
         )
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+        .cors(cors -> cors
+        .configurationSource(source))
         .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
         .addFilter(authenticationFilter)
         .addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)

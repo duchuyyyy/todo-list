@@ -64,8 +64,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
         response.addHeader(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
         response.addHeader(SecurityConstants.REFRESH, SecurityConstants.BEARER + refreshtoken);
-        response.getWriter().write(SecurityConstants.BEARER + token);
-        response.getWriter().write(SecurityConstants.BEARER + refreshtoken);
-        response.getWriter().write("ID user: " + id);
+        response.getWriter().write("Id" + id);
     }
 }
