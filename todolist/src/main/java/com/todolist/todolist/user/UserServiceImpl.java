@@ -25,17 +25,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
-        user.setVerification(false);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        
-        String confirmtoken = generateConfirmToken(user.getEmail());
-        user.setConfirmtoken(confirmtoken);
-
-        String link = "http://localhost:8080/user/register/confirmtoken=" + confirmtoken;
-        emailService.sendEmail(user.getEmail(), "Confirm account", emailService.buildEmailConfirm(user.getEmail(), link));
 
         Boolean check = userRepository.existsByEmail(user.getEmail());
         if(check == false) {
+            user.setVerification(false);
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        
+            String confirmtoken = generateConfirmToken(user.getEmail());
+            user.setConfirmtoken(confirmtoken);
+
+            String link = "http://localhost:8080/user/register/confirmtoken=" + confirmtoken;
+            emailService.sendEmail(user.getEmail(), "Confirm account", emailService.buildEmailConfirm(user.getEmail(), link));
             return userRepository.save(user);
         }
         else {
