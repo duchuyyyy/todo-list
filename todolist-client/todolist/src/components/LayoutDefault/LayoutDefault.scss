@@ -1,0 +1,162 @@
+.content {
+  &__form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__button {
+    padding: 20px 50px;
+    background-color: #f1f1f1;
+    color: #333;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    &:hover {
+      background-color: #ddd;
+      cursor: pointer;
+    }
+  }
+  &__input {
+    padding: 20px 70px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-right: 30px;
+    margin-left: -100px;
+    &:focus {
+      outline: none;
+      border-color: #aaa;
+      box-shadow: 0 0 5px #aaa;
+    }
+  }
+
+  &__menu {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+  }
+}
+
+.todo {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #d8d8d8;
+  border-radius: 5px;
+  margin: 5px 0px;
+  background-color: #e8e8e8;
+  position: relative;
+  padding: 20px 20px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+  &__label {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  &__button {
+    margin-right: 10px;
+
+    &--delete {
+      margin-right: 5px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: red;
+      transition: background-color 0.3s ease;
+      &:hover {
+        cursor: pointer;
+        background-color: chocolate;
+      }
+    }
+
+    &--important {
+      margin-right: 5px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: blue;
+      color: white;
+      transition: background-color 0.3s ease;
+      &:hover {
+        cursor: pointer;
+        background-color: blueviolet;
+      }
+    }
+
+    &--done {
+      margin-right: 5px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: green;
+      color: white;
+      transition: background-color 0.3s ease;
+      &:hover {
+        cursor: pointer;
+        background-color: greenyellow;
+      }
+    }
+
+    &--update {
+      margin-right: 5px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #0A2896;
+      color: white;
+      transition: background-color 0.3s ease;
+      &:hover {
+        cursor: pointer;
+        background-color: #010231;
+      }
+    }
+  }
+}
+
+.header {
+    &__content {
+        display: flex;
+        align-items: center;
+    }
+    &__logo {
+        color: aliceblue;
+        font-size: 25px;
+        font-weight: 700;
+        margin-right: 10px;
+    }
+    &__text {
+        color: aliceblue;
+        font-size: 18px;
+    }
+    &__logout {
+        color: aliceblue;
+        display: flex;
+        align-items: center;
+        font-size: 18px;
+    }
+    &__button {
+        margin-left: 10px;
+        padding: 10px 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #001529;
+        color: aliceblue;
+        &:hover {
+            background-color: #ddd;
+            cursor: pointer;
+            color: #001529;
+          }
+    }
+}
+
+.modal-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
