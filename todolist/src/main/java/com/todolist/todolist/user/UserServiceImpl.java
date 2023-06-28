@@ -114,16 +114,16 @@ public class UserServiceImpl implements UserService {
     public Boolean validateRefreshToken(String refreshtoken) {
         if(userRepository.existsByRefreshtoken(refreshtoken)) {
             try {
-                String user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET_KEY))
+                String refreshtokenVerify = refreshtoken.replace(SecurityConstants.BEARER, "");
+                String user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET_KEY_REFRESH))
                 .build()
-                .verify(refreshtoken)
+                .verify(refreshtokenVerify)
                 .getSubject();
 
                 System.out.println(user);
                 return true;
             }
             catch (JWTVerificationException e) {
-                // Verification failed
                 return false;
             }
         }
@@ -138,6 +138,16 @@ public class UserServiceImpl implements UserService {
         .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
         token = SecurityConstants.BEARER + token;
         return token;
+    }
+
+    @Override
+    public String generateRefreshToken(String email) {
+        String refreshtoken = JWT.create()
+        .withSubject(email)
+        .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.REFRESH_TOKEN_EXPIRATION))
+        .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY_REFRESH));
+        refreshtoken =  SecurityConstants.BEARER + refreshtoken;
+        return refreshtoken;
     }
 
     @Override

@@ -58,16 +58,18 @@ public class UserController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<String> refreshToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
-        String refreshtoken = refreshTokenRequestDto.getRefreshtoken().replace(SecurityConstants.BEARER, "");
+        String refreshtoken = refreshTokenRequestDto.getRefreshtoken();
         User user = userService.getUserByRefreshtoken(refreshtoken);
         Boolean check = userService.validateRefreshToken(refreshtoken);
         if(check == true) {
-            return new ResponseEntity<>(userService.generateAccessToken(user.getEmail()), HttpStatus.OK);
+            String newrefreshtoken =  userService.generateRefreshToken(user.getEmail());
+            userService.setRefreshtoken(user.getEmail(), newrefreshtoken);
+            return new ResponseEntity<>(userService.generateAccessToken(user.getEmail()) + "\n" + newrefreshtoken, HttpStatus.OK);
         }
         else {
             return new ResponseEntity<>("Refreshtoken is not valid!", HttpStatus.BAD_REQUEST);
         }
-    }
+    }  
 
     @PostMapping("/logout")
     public ResponseEntity<HttpStatus> logout(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
