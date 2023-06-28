@@ -15,6 +15,7 @@ import {
   getAllTodo,
   markDoneTodo,
   markImportantTodo,
+  undoImportantTodo,
   updateTodo,
 } from "../../services/TodoService";
 import { clearDataStorage } from "../../helpers/localStorageService";
@@ -125,6 +126,12 @@ const LayoutDefault = () => {
     console.log(result);
   };
 
+  const markUndoImportantTodo = async (idTodo) => {
+    const result = await undoImportantTodo(idTodo);
+    setStatus(!status);
+    return result;
+  }
+
   const handleDoneTodo = async (idTodo) => {
     const result = await markDoneTodo(idTodo);
     setStatus(!status);
@@ -134,6 +141,18 @@ const LayoutDefault = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const filterTodos = () => {
+    if (todos && Array.isArray(todos.data) && todos.data.length > 0) {
+      if (current === 'important') {
+        return todos.data.filter((todo) => todo.important === true && todo.status !== true);
+      } else if (current === 'done') {
+        return todos.data.filter((todo) => todo.status === true);
+      } else if (current === 'task'){
+        return todos.data.filter((todo) => todo.status === false);
+      }
+  }
+};
 
   return (
     <>
@@ -213,11 +232,11 @@ const LayoutDefault = () => {
 
             <div>
               {todos && Array.isArray(todos.data) && todos.data.length > 0 ? (
-               todos.data.map((data) => {
-
+               filterTodos().map((data) => {
+                const todoClass = `todo ${data.status ? 'todo--completed' : ''} ${data.important ? 'todo--important' : ''}`;
                 
                 return (
-                <li key={data.id} className={`todo ${data.status ? 'todo--completed' : ''}`}>
+                <li key={data.id} className={todoClass}>
                   <span className={`todo__label ${data.status ? 'todo__label--completed' : ''}`}>
                     {data.task + "  "}
                   </span>
@@ -248,12 +267,21 @@ const LayoutDefault = () => {
                       >
                         Delete
                       </button>
+                      {data.important ? 
                       <button
                         className="todo__button--important"
-                        onClick={() => handleImportantTodo(data.id)}
+                        onClick={() => markUndoImportantTodo(data.id)}
                       >
-                        Important
+                        Unimportant
                       </button>
+                      :
+                      <button
+                      className="todo__button--important"
+                      onClick={() => handleImportantTodo(data.id)}
+                    >
+                      Important
+                    </button>
+                      }
                       <button
                         className={`todo__button--${data.done ? 'undone' : 'done'}`}
                         onClick={() => handleDoneTodo(data.id)}
