@@ -8,11 +8,9 @@ export const getAllTodo = async (id) => {
         return result
     }
     catch (error) {
-        console.log(error.response.data);
-        if(error.response.data === "JWT NOT VALID") {
            const result = await refreshAccessToken();
            console.log(result);
-        }
+        console.log(error);
     }
 }
 
