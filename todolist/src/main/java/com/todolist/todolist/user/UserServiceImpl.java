@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         user1.setResetpasswordtoken(resetPasswordToken);
         userRepository.save(user1);
 
-        String link = "http://localhost:8080/user/reset-password/resetpasswordtoken=" + resetPasswordToken;
+        String link = "http://localhost:3000/reset-password/" + resetPasswordToken;
         emailService.sendEmail(user1.getEmail(), "Reset password account", emailService.buildEmailResetPassword(user1.getEmail(), link));
     }
 
@@ -144,6 +144,13 @@ public class UserServiceImpl implements UserService {
     public Long getIdUser(String email) {
         User user = getUser(email);
         return user.getId();
+    }
+
+    @Override
+    public String getEmailById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        User user2 = unwrapUser(user, id);
+        return user2.getEmail();
     }
     
     @Override

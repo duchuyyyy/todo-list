@@ -37,7 +37,12 @@ public class UserController {
         return userService.confirmToken(confirmtoken);
     }
 
-    @GetMapping("/forgot-password")
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getInfoUser(@PathVariable Long id) {
+        return new ResponseEntity<>(userService.getEmailById(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot-password")
     public void handleForgotPassword(@RequestBody ResetPasswordRequestDto resetPasswordRequestDto) {
         User user = new User();
         user.loadFromResetPasswordRequestDto(resetPasswordRequestDto);

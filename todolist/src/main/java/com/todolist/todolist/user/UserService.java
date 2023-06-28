@@ -16,4 +16,5 @@ public interface UserService {
     String generateAccessToken(String email);
     User getUserByRefreshtoken(String refreshtoken);
     void deleteRefreshtoken(User user);
+    String getEmailById(Long id);
 }
