@@ -67,7 +67,7 @@ function Login() {
       </Form.Item>
       <Form.Item>
 
-        Forgot password
+      <Link to="/forgot-password">Forgot password</Link>
       </Form.Item>
 
       <Form.Item>

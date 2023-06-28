@@ -19,13 +19,14 @@ import {
 } from "../../services/TodoService";
 import { clearDataStorage } from "../../helpers/localStorageService";
 import { useNavigate } from "react-router";
+import { getInfoUser } from "../../services/UserService";
 
 const { Header, Content, Footer } = Layout;
 
 const items = [
   {
-    label: "All",
-    key: "all",
+    label: "Task",
+    key: "task",
     icon: <InfoCircleOutlined />,
   },
   {
@@ -42,13 +43,14 @@ const items = [
 
 const LayoutDefault = () => {
   const navigate = useNavigate();
-  const [current, setCurrent] = useState("mail");
+  const [current, setCurrent] = useState("task");
   const [todos, setTodo] = useState([]);
   const [addTodo, setAddTodo] = useState();
   const [status, setStatus] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskId, setTaskId] = useState();
   const [updateValueTodo, setUpdateValueTodo] = useState();
+  const [email, setEmail] = useState();
 
   const showModal = (id) => {
     setIsModalOpen(true);
@@ -73,14 +75,25 @@ const LayoutDefault = () => {
       const result = await getAllTodo(id);
       setTodo(result);
     };
+
+    const fetchInfo = async () => {
+      const result = await getInfoUser();
+      if(result.status === 200) {
+        setEmail(result.data);
+      }
+    }
+
     const handleBlockBack = () => {
       window.history.forward();
     };
 
     window.history.pushState(null, null, window.location.pathname);
     window.addEventListener('popstate', handleBlockBack);
+
     fetchTodo();
+    fetchInfo();
   }, [status]);
+
 
   const onClick = (e) => {
     console.log("click ", e);
@@ -141,7 +154,7 @@ const LayoutDefault = () => {
               <UserOutlined />
             </div>
             <div className="header__text">
-              <h4>Username</h4>
+              <h4>{email}</h4>
             </div>
           </div>
           <div className="header__logout">
@@ -196,14 +209,19 @@ const LayoutDefault = () => {
               selectedKeys={[current]}
               mode="horizontal"
               items={items}
-              defaultSelectedKeys={["all"]}
             />
 
             <div>
-              {Array.isArray(todos.data) && todos.data.length > 0 ? (
-                todos.data.map((data) => (
-                  <li key={data.id} className="todo">
-                    <span className="todo__label">{data.task + "  "}</span>
+              {todos && Array.isArray(todos.data) && todos.data.length > 0 ? (
+               todos.data.map((data) => {
+
+                
+                return (
+                <li key={data.id} className={`todo ${data.status ? 'todo--completed' : ''}`}>
+                  <span className={`todo__label ${data.status ? 'todo__label--completed' : ''}`}>
+                    {data.task + "  "}
+                  </span>
+                  {!data.status && (
                     <div className="todo__button">
                       <button
                         className="todo__button--update"
@@ -217,7 +235,12 @@ const LayoutDefault = () => {
                         onOk={handleModalOk}
                         onCancel={handleModalCancel}
                       >
-                        <input required type="text" className="modal-input" onChange={(e) => setUpdateValueTodo(e.target.value)} />
+                        <input
+                          required
+                          type="text"
+                          className="modal-input"
+                          onChange={(e) => setUpdateValueTodo(e.target.value)}
+                        />
                       </Modal>
                       <button
                         className="todo__button--delete"
@@ -232,14 +255,15 @@ const LayoutDefault = () => {
                         Important
                       </button>
                       <button
-                        className="todo__button--done"
+                        className={`todo__button--${data.done ? 'undone' : 'done'}`}
                         onClick={() => handleDoneTodo(data.id)}
                       >
                         Done
                       </button>
                     </div>
-                  </li>
-                ))
+                  )}
+                </li>
+              )})
               ) : (
                 <p>No todos found.</p>
               )}

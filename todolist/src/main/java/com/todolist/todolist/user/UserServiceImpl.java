@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         user1.setResetpasswordtoken(resetPasswordToken);
         userRepository.save(user1);
 
-        String link = "http://localhost:8080/user/reset-password/resetpasswordtoken=" + resetPasswordToken;
+        String link = "http://localhost:3000/reset-password/" + resetPasswordToken;
         emailService.sendEmail(user1.getEmail(), "Reset password account", emailService.buildEmailResetPassword(user1.getEmail(), link));
     }
 
@@ -114,16 +114,16 @@ public class UserServiceImpl implements UserService {
     public Boolean validateRefreshToken(String refreshtoken) {
         if(userRepository.existsByRefreshtoken(refreshtoken)) {
             try {
-                String user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET_KEY))
+                String refreshtokenVerify = refreshtoken.replace(SecurityConstants.BEARER, "");
+                String user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET_KEY_REFRESH))
                 .build()
-                .verify(refreshtoken)
+                .verify(refreshtokenVerify)
                 .getSubject();
 
                 System.out.println(user);
                 return true;
             }
             catch (JWTVerificationException e) {
-                // Verification failed
                 return false;
             }
         }
@@ -141,9 +141,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String generateRefreshToken(String email) {
+        String refreshtoken = JWT.create()
+        .withSubject(email)
+        .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.REFRESH_TOKEN_EXPIRATION))
+        .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY_REFRESH));
+        refreshtoken =  SecurityConstants.BEARER + refreshtoken;
+        return refreshtoken;
+    }
+
+    @Override
     public Long getIdUser(String email) {
         User user = getUser(email);
         return user.getId();
+    }
+
+    @Override
+    public String getEmailById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        User user2 = unwrapUser(user, id);
+        return user2.getEmail();
     }
     
     @Override

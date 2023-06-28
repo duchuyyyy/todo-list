@@ -57,13 +57,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
         String refreshtoken = JWT.create()
             .withSubject(authResult.getName())
             .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.REFRESH_TOKEN_EXPIRATION))
-            .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
-
+            .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY_REFRESH));
+        refreshtoken = SecurityConstants.BEARER + refreshtoken;
         userService.setRefreshtoken(authResult.getName(), refreshtoken);
         Long id = userService.getIdUser(authResult.getName());
 
         response.addHeader(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
-        response.addHeader(SecurityConstants.REFRESH, SecurityConstants.BEARER + refreshtoken);
+        response.addHeader(SecurityConstants.REFRESH, refreshtoken);
         response.getWriter().write("Id" + id);
     }
 }

@@ -1,3 +1,4 @@
+import { setAccessToken } from "../helpers/localStorageService";
 import { apiClient } from "../utils/axios_helper"
 
 export const refreshAccessToken = async () => {
@@ -6,7 +7,9 @@ export const refreshAccessToken = async () => {
             refreshtoken: window.localStorage.getItem("REFRESH_TOKEN")
         }
         const result = await apiClient.post("/user/refresh-token", refreshtoken);
-        console.log(result);
+        if(result.data !== undefined) {
+            setAccessToken(result.data);
+        }
         return result;
     }
     catch (error) {
