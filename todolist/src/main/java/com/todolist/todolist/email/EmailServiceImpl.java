@@ -50,16 +50,14 @@ public class EmailServiceImpl implements EmailService{
 
     @Override
     public String buildEmailResetPassword(String name, String link) {
-        String content = "<div style=\"font-family: Helvetica, Arial, sans-serif; font-size: 16px; margin: 0; color: #0b0c0c;\">";
-        content += "    <p style=\"margin: 0 0 20px 0; font-size: 19px; line-height: 25px; color: #0b0c0c;\">Hi " + name + ",</p>";
-        content += "    <p style=\"margin: 0 0 20px 0; font-size: 19px; line-height: 25px; color: #0b0c0c;\">You have requested to reset your password. Please click on the link below to reset your password:</p>";
-        content += "    <blockquote style=\"margin: 0 0 20px 0; border-left: 10px solid #b1b4b6; padding: 15px 0 0.1px 15px; font-size: 19px; line-height: 25px;\">";
-        content += "        <p style=\"margin: 0 0 20px 0; font-size: 19px; line-height: 25px; color: #0b0c0c;\"><a href=\"" + link + "\">Reset Password</a></p>";
-        content += "    </blockquote>";
-        content += "    <p>Link will expire in 15 minutes.</p>";
-        content += "    <p>See you soon</p>";
-        content += "</div>";
-
-    return content; 
+        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
+        "    <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name + ",</p>" +
+        "    <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">You have requested to reset your password. Please click on the link below to reset your password:</p>" +
+        "    <blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\">" +
+        "        <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"><a href=\"" + link + "\">Reset Password</a></p>" +
+        "    </blockquote>\n" +
+        "    <p>Link will expire in 15 minutes.</p>" +
+        "    <p>See you soon</p>" +
+        "</div>";
     }
 }
