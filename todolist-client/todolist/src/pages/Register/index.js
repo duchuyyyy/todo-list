@@ -1,24 +1,29 @@
 import { Button, Form, Input } from 'antd';
+import { useNavigate } from 'react-router';
 import { register } from '../../services/UserService';
 import "./Register.scss"
 
 
-const onFinish = async (values) => {
-  console.log('Success:', values);
-  if(values.password === values.confirmpassword) {
-    const data = {
-      email: values.email,
-      password: values.password,
-    }
-    const result = await register(data);
-    console.log(result);
-  }
-};
 
-const onFinishFailed = (errorInfo) => {
-  console.log('Failed:', errorInfo);
-};
 function Register() {
+  const navigate  = useNavigate();
+
+  const onFinish = async (values) => {
+    console.log('Success:', values);
+    if(values.password === values.confirmpassword) {
+      const data = {
+        email: values.email,
+        password: values.password,
+      }
+      const result = await register(data);
+      console.log(result);
+      navigate("/register/success");
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
   const validateEmail = (_, value) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

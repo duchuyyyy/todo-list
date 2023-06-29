@@ -6,7 +6,8 @@ import PrivateRoutes from "../components/PrivateRoutes";
 import NotFound from "../pages/NotFound";
 import ForgotPasswordRequestSuccess from "../pages/ForgotPassword/ForgotPasswordRequestSuccess";
 import ResetPassword from "../pages/ResetPassword";
-import ResetPasswordSuccess from "../pages/ResetPassword/ResetPasswordSuccess"
+import ResetPasswordSuccess from "../pages/ResetPassword/ResetPasswordSuccess";
+import RegisterSuccess from  "../pages/Register/RegisterSuccess";
 
 export const routes = [
     {
@@ -16,6 +17,10 @@ export const routes = [
     {
         path: "/register",
         element: <Register />
+    },
+    {
+        path:  "/register/success",
+        element: <RegisterSuccess />
     },
     {
         element: <PrivateRoutes />,
