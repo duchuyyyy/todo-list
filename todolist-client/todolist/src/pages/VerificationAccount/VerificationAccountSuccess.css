@@ -1,0 +1,25 @@
+.container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    text-align: center;
+    margin-top: 0;
+  }
+  
+  .description {
+    text-align: center;
+  }
+  
+  .message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #4caf50;
+  }
+  

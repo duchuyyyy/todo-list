@@ -52,3 +52,24 @@ export const getInfoUser = async  () => {
         console.log(error);
     }
 }
+
+export const verifyAccount = async (confirmtoken) => {
+    try {
+        const result = await apiClient.get("/user/register/confirmtoken=" + confirmtoken);
+        return result;
+    }
+    catch (error) {
+        alert("Link is invalid");
+    }
+}
+
+export const logout = async () => {
+    try {
+        const refreshtoken = window.localStorage.getItem("REFRESH_TOKEN");
+        const result = await apiClient.post("/user/logout", refreshtoken);
+        return result;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}

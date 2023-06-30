@@ -8,6 +8,8 @@ import ForgotPasswordRequestSuccess from "../pages/ForgotPassword/ForgotPassword
 import ResetPassword from "../pages/ResetPassword";
 import ResetPasswordSuccess from "../pages/ResetPassword/ResetPasswordSuccess";
 import RegisterSuccess from  "../pages/Register/RegisterSuccess";
+import VerificationAccount from "../pages/VerificationAccount";
+import VerificationSuccess from "../pages/VerificationAccount/VerificationAccountSuccess";
 
 export const routes = [
     {
@@ -34,6 +36,14 @@ export const routes = [
     {
         path:"/forgot-password",
         element: <ForgotPassword />
+    },
+    {
+        path: "/verification-account/:confirmtoken",
+        element: <VerificationAccount />
+    },
+    {
+        path: "/verification-account-success",
+        element: <VerificationSuccess />
     },
     {
         path: "/reset-password/:resetpasswordtoken",
