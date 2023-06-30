@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
             String confirmtoken = generateConfirmToken(user.getEmail());
             user.setConfirmtoken(confirmtoken);
     
-            String link = "http://localhost:8080/user/register/confirmtoken=" + confirmtoken;
+            String link = "http://localhost:3000/verification-account/" + confirmtoken;
             emailService.sendEmail(user.getEmail(), "Confirm account", emailService.buildEmailConfirm(user.getEmail(), link));
 
             user.setRefreshtoken("null");

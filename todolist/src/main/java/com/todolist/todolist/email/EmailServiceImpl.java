@@ -25,7 +25,7 @@ public class EmailServiceImpl implements EmailService{
             helper.setFrom("phanhoangduchuyy@gmail.com");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(body, true); // Set the body as HTML content
+            helper.setText(body, true);
 
             mailSender.send(message);
 
